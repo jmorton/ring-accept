@@ -28,7 +28,8 @@
 
 (defn- parse-accept [header-value]
   (let [[_ type _ _ _ _ q] (re-matches re-accept-value header-value)]
-    {type (Double/parseDouble (or q "1"))}))
+    {:media-type type
+     :quality (Double/parseDouble (or q "1"))}))
 
 (defn- parse-header [header]
   (map second (re-seq re-accept-header header)))
@@ -36,7 +37,7 @@
 (defn accept-request [request]
   (if-let [header (get-in request [:headers "accept"])]
     (let [values (parse-header header)
-          accept (into {} (map parse-accept values))]
+          accept (into [] (map parse-accept values))]
       (assoc request :accept accept))))
 
 (defn wrap-accept [handler]
