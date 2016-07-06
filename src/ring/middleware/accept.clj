@@ -87,11 +87,6 @@
 (def ^:private re-extensions
   (re-pattern "(?<=;)([^=]+)=([^;]+)"))
 
-(->> (re-seq re-extensions ";foo=1;bar=2")
-     (map rest)
-     (map vec)
-     (reduce conj {}))
-
 (defn prioritize
   "Sort media-types by quality and specificity, most to least."
   [accepts]
