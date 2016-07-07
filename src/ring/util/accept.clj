@@ -20,5 +20,7 @@
      (let [renders# (hash-map ~@renders)
            best-media# (best-match request# renders#)
            best-render-fn# (renders# best-media# ~fallback)]
-       (->> (assoc response# :content-type best-media#)
+       (->> (assoc-in response# [:headers "Content-Type"] best-media#)
             (best-render-fn#)))))
+
+(assoc-in {} [:a "b"] 1)
