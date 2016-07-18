@@ -19,6 +19,17 @@
 (def ^:private re-extensions
   (re-pattern "(?<=;)([^=]+)=([^;]+)"))
 
+(def ^:private re-vendor
+  (re-pattern "([^\\+]+)"))
+
+;; Non-standard, not specified by an RFC.
+(def ^:private re-version
+  (re-pattern "v([0-9\\.]+)"))
+
+;; Non-standard
+(def ^:private re-format
+  (re-pattern ".+\\+(.+)"))
+
 ;; Technically, this pattern is incorrect because it matches
 ;; an erroneous media-range such as "*/plain", but a more
 ;; complicated pattern introduces complexities when parsing
@@ -84,8 +95,20 @@
          (assoc accept :extensions))
     (assoc accept :extensions {})))
 
-(def ^:private re-extensions
-  (re-pattern "(?<=;)([^=]+)=([^;]+)"))
+(defn +vendor
+  ""
+  [accept]
+  (assoc accept :vendor (last (re-find re-vendor (accept :subtype)))))
+
+(defn +version
+  "Non standard. Parse v### from anywhere in media-range."
+  [accept]
+  (assoc accept :version (last (re-find re-version (accept :subtype)))))
+
+(defn +format
+  ""
+  [accept]
+  (assoc accept :format (last (re-find re-format (accept :subtype)))))
 
 (defn prioritize
   "Sort media-types by quality and specificity, most to least."
@@ -95,7 +118,11 @@
 (def accept-xf (comp (map normalize)
                      (map parse-accept)
                      (map +extensions)
-                     (map +specificity)))
+                     (map +specificity)
+                     (map +vendor)
+                     ;; non-standard media-range properties
+                     (map +version)
+                     (map +format)))
 
 (defn accept-request
   ""
