@@ -1,13 +1,15 @@
 # Ring-Accept
 
-A Clojure library designed to ... well, that part is up to you.
+Ring middleware and utils for using accept headers.
 
-## Usage
+## Installation
 
-FIXME
+```
+[jmorton/ring-accept "0.2.0-SNAPSHOT"]
+```
 
 ## License
 
-Copyright © 2014 James Reeves
+Copyright © 2014-2016 James Reeves and contributors.
 
 Distributed under the MIT License, the same as Ring.
